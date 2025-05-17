@@ -21,8 +21,12 @@ public class DiscountedProduct extends Product {
     }
 
     @Override
+    public String getStringRepresentation() {
+        return "";
+    }
+
+    @Override
     public String toString() {
         return super.toString() + " (" + discountPercentage + "%)";
     }
 }
-
