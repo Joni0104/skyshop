@@ -16,7 +16,7 @@ public final class Article implements Searchable {
         return title + " " + text;
     }
 
-    // Реализация методов интерфейса Searchable
+
     @Override
     public String getSearchTerm() {
         return title + " " + text;

@@ -1,39 +1,51 @@
 package org.skypro.skyshop;
 
-import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.content.Article;
 import org.skypro.skyshop.product.DiscountedProduct;
-import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
+import org.skypro.skyshop.search.Searchable;
 
-import java.util.Arrays;
+
 
 public class App {
     public static void main(String[] args) {
-        // Создание объектов
-        Product[] products = {
-                new SimpleProduct("Книга Java", 500),
-                new DiscountedProduct("Мышь игровая", 1000, 20),
-                new FixPriceProduct("USB-флешка")
-        };
 
-        Article[] articles = {
-                new Article("Обзор мышей", "Лучшие игровые мыши 2025 года..."),
-                new Article("Java для начинающих", "Основы программирования на Java...")
-        };
+        try {
+            Product invalid1 = new SimpleProduct("  ", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка создания продукта: " + e.getMessage());
+        }
 
-        // Создание поискового движка
+        try {
+            Product invalid2 = new DiscountedProduct("Телефон", -5000, 10);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка создания продукта: " + e.getMessage());
+        }
+
+
+        SearchEngine engine = createSearchEngine();
+
+        try {
+            Searchable best = engine.findBestMatch("ноутбук");
+            System.out.println("Лучший результат: " + best.getStringRepresentation());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            engine.findBestMatch("несуществующий запрос");
+        } catch (BestResultNotFound e) {
+            System.out.println("Ошибка поиска: " + e.getMessage());
+        }
+    }
+
+    private static SearchEngine createSearchEngine() {
         SearchEngine engine = new SearchEngine(10);
-        for (Product p : products) engine.add(p);
-        for (Article a : articles) engine.add(a);
-
-        // Демонстрация поиска
-        System.out.println("Результаты поиска 'Java':");
-        System.out.println(Arrays.toString(engine.search("Java")));
-
-        System.out.println("Результаты поиска 'мыш':");
-        System.out.println(Arrays.toString(engine.search("мыш")));
+        engine.add(new SimpleProduct("Ноутбук игровой", 100000));
+        engine.add(new Article("Обзоры ноутбуков", "Лучшие ноутбуки 2023..."));
+        return engine;
     }
 }
