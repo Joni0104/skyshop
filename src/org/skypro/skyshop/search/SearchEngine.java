@@ -1,60 +1,35 @@
 package org.skypro.skyshop.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.skypro.skyshop.content.SearchableComparator;
+
+import java.util.*;
 
 public class SearchEngine {
-    private final List<Searchable> items = new ArrayList<>();
+    private final Set<Searchable> items = new HashSet<>();
+    private final Comparator<Searchable> comparator = new SearchableComparator();
 
     public void add(Searchable item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item cannot be null");
+        }
         items.add(item);
     }
 
-    public Map<String, Searchable> search(String query) {
-        return items.stream()
-                .filter(item -> item.getSearchTerm().contains(query))
-                .collect(Collectors.toMap(
-                        Searchable::getName,
-                        item -> item,
-                        (existing, replacement) -> existing
-                        ));
+    public Set<Searchable> search(String query) {
+        if (query == null) {
+            throw new IllegalArgumentException("Query cannot be null");
+        }
 
-
-    }
-
-    public Searchable findBestMatch(String query) throws BestResultNotFound {
-        Searchable bestMatch = null;
-        int maxCount = 0;
-
+        Set<Searchable> result = new TreeSet<>(comparator);
         for (Searchable item : items) {
-            if (item == null) continue;
-
-            int count = countOccurrences(item.getSearchTerm(), query);
-            if (count > maxCount) {
-                maxCount = count;
-                bestMatch = item;
+            if (item.match(query)) {
+                result.add(item);
             }
         }
-
-        if (bestMatch == null) {
-            throw new BestResultNotFound(query);
-        }
-        return bestMatch;
+        return result;
     }
 
-    private int countOccurrences(String text, String substring) {
-        if (text.isEmpty() || substring.isEmpty()) return 0;
-
-        int count = 0;
-        int index = 0;
-        while ((index = text.indexOf(substring, index)) != -1) {
-            count++;
-            index += substring.length();
-        }
-        return count;
+    public int size() {
+        return items.size();
     }
 }
-
-

@@ -1,8 +1,9 @@
 package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
+
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class ProductBasket {
     private final Map<String, List<Product>> productsMap = new HashMap<>();
@@ -31,7 +32,7 @@ public class ProductBasket {
         List<Product> allProducts = productsMap.values().stream()
                 .flatMap(List::stream)
                 .sorted(Comparator.comparing(Product::getName))
-                .collect(Collectors.toList());
+                .toList();
 
         for (Product p : allProducts) {
             System.out.println(p);

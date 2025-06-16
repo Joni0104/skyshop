@@ -17,6 +17,21 @@ public class SimpleProduct extends Product {
     }
 
     @Override
+    public boolean isSpecial() {
+        return false;
+    }
+
+    @Override
+    public String getSearchTerm() {
+        return "";
+    }
+
+    @Override
+    public String getContentType() {
+        return "";
+    }
+
+    @Override
     public String getStringRepresentation() {
         return "";
     }
