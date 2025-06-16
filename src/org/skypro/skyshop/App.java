@@ -10,18 +10,17 @@ import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 import java.util.List;
-
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
-
         ProductBasket basket = new ProductBasket();
 
 
         basket.addProduct(new SimpleProduct("Книга", 500));
         basket.addProduct(new DiscountedProduct("Мышь", 1000, 20));
         basket.addProduct(new FixPriceProduct("Флешка"));
-        basket.addProduct(new SimpleProduct("Книга", 300)); // Дубликат
+        basket.addProduct(new SimpleProduct("Книга", 300));
 
         System.out.println("Содержимое корзины:");
         basket.printContents();
@@ -29,30 +28,22 @@ public class App {
 
         System.out.println("Удаление товара 'Книга':");
         List<Product> removed = basket.removeProductsByName("Книга");
-        if (removed.isEmpty()) {
-            System.out.println("Список пуст");
-        } else {
-            System.out.println("Удалено " + removed.size() + " товаров:");
-            removed.forEach(p -> System.out.println("- " + p.getName()));
-        }
+        System.out.println("Удалено " + removed.size() + " товаров:");
+        removed.forEach(p -> System.out.println("- " + p.getName()));
 
         System.out.println("Содержимое корзины после удаления:");
         basket.printContents();
-
-
-        System.out.println("Попытка удаления 'Ноутбук':");
-        List<Product> notFound = basket.removeProductsByName("Ноутбук");
-        System.out.println(notFound.isEmpty() ? "Список пуст" : "Удалены товары");
 
 
         SearchEngine engine = new SearchEngine();
         engine.add(new SimpleProduct("Ноутбук", 75000));
         engine.add(new Article("Обзор ноутбуков", "Лучшие модели 2023"));
         engine.add(new DiscountedProduct("Игровая мышь", 2500, 15));
+        engine.add(new SimpleProduct("Мышь беспроводная", 1200));
 
         System.out.println("Результаты поиска 'мышь':");
-        List<Searchable> results = engine.search("мышь");
-        results.forEach(item ->
-                System.out.println(item.getStringRepresentation()));
+        Map<String, Searchable> results = engine.search("мышь");
+        results.forEach((name, item) ->
+                System.out.println(name + ": " + item.getStringRepresentation()));
     }
 }

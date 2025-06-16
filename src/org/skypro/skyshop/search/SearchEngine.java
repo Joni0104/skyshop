@@ -2,6 +2,8 @@ package org.skypro.skyshop.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private final List<Searchable> items = new ArrayList<>();
@@ -10,17 +12,18 @@ public class SearchEngine {
         items.add(item);
     }
 
-    public List<Searchable> search(String query) {
-        List<Searchable> results = new ArrayList<>();
+    public Map<String, Searchable> search(String query) {
+        return items.stream()
+                .filter(item -> item.getSearchTerm().contains(query))
+                .collect(Collectors.toMap(
+                        Searchable::getName,
+                        item -> item,
+                        (existing, replacement) -> existing
+                        ));
 
-        for (Searchable item : items) {
-            if (item.getSearchTerm().contains(query)) {
-                results.add(item);
-            }
-        }
-        return results;
 
     }
+
     public Searchable findBestMatch(String query) throws BestResultNotFound {
         Searchable bestMatch = null;
         int maxCount = 0;
