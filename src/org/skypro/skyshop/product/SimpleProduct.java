@@ -15,7 +15,10 @@ public class SimpleProduct extends Product {
     public int getPrice() {
         return price;
     }
-
+    @Override
+    public String toString() {
+        return getName() + ": " + getPrice();
+    }
     @Override
     public boolean isSpecial() {
         return false;

@@ -22,6 +22,7 @@ public class FixPriceProduct extends Product {
         return "";
     }
 
+
     @Override
     public String getContentType() {
         return "";

@@ -1,24 +1,23 @@
 package org.skypro.skyshop.product;
 
+import java.util.Objects;
+
 public class DiscountedProduct extends Product {
     private final int basePrice;
-    private final int discountPercentage;
+    private final int discountPercent;
 
-    public DiscountedProduct(String name, int basePrice, int discount) {
+    public DiscountedProduct(String name, int basePrice, int discountPercent) {
         super(name);
-        if (basePrice <= 0) {
-            throw new IllegalArgumentException("Базовая цена должна быть больше 0: " + basePrice);
-        }
-        if (discount < 0 || discount > 100) {
-            throw new IllegalArgumentException("Скидка должна быть от 0 до 100%: " + discount);
+        if (discountPercent < 0 || discountPercent > 100) {
+            throw new IllegalArgumentException("Скидка должна быть от 0 до 100%");
         }
         this.basePrice = basePrice;
-        this.discountPercentage = discount;
+        this.discountPercent = discountPercent;
     }
 
     @Override
     public int getPrice() {
-        return basePrice * (100 - discountPercentage) / 100;
+        return basePrice * (100 - discountPercent) / 100;
     }
 
     @Override
@@ -37,12 +36,29 @@ public class DiscountedProduct extends Product {
     }
 
     @Override
-    public String getStringRepresentation() {
-        return "";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DiscountedProduct that = (DiscountedProduct) o;
+        return basePrice == that.basePrice && discountPercent == that.discountPercent;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), basePrice, discountPercent);
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (" + discountPercentage + "%)";
+        return getName() + ": " + getPrice() + " (" + discountPercent + "%)";
+    }
+
+    public int getBasePrice() {
+        return basePrice;
+    }
+
+    public int getDiscountPercent() {
+        return discountPercent;
     }
 }
